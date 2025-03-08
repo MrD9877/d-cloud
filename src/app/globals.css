@@ -117,7 +117,9 @@
   --color-weblue: #27b1b2;
   --color-weChat: #b5e2e2;
 }
-
+img::selection {
+  background: transparent;
+}
 .weInputContainer {
   width: fit-content;
   height: fit-content;

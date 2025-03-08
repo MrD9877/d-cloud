@@ -1,27 +1,26 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
-import { RotateCw, Trash2 } from "lucide-react";
+import { Copy, RotateCw, Trash2 } from "lucide-react";
 import Image from "next/image";
 import DownloadButton from "./DownLoadBtn";
 import VideoPlayerCarousel from "./VideoPlayer";
 import DeletePromt from "./DeletePromt";
+import { FileContext } from "./Gallery";
+import { toast } from "sonner";
 
 type Rotate = {
   [key: number]: number;
 };
 type ImageCarouselType = {
-  fileUrls: string[];
   children: React.ReactElement;
   index: number;
-  fileType: string;
-  dowload: boolean;
 };
 
-export default function ImageCarousel({ fileUrls, children, index, fileType, dowload }: ImageCarouselType) {
+export default function ImageCarousel({ children, index }: ImageCarouselType) {
   const [rotateDeg, setRotate] = useState<Rotate>({});
-  const [loading, setLoading] = useState(false);
+  const files = useContext(FileContext);
   const rotateImg = (index: number) => {
     if (rotateDeg[index]) {
       setRotate({ ...rotateDeg, [index]: rotateDeg[index] + 90 });
@@ -29,7 +28,17 @@ export default function ImageCarousel({ fileUrls, children, index, fileType, dow
       setRotate({ ...rotateDeg, [index]: 90 });
     }
   };
-  if (loading) return <>Loading...</>;
+  if (!files) return <>{children}</>;
+  const { fileUrls, fileType, download } = files;
+
+  const copyURL = async (url: string) => {
+    try {
+      await navigator.clipboard.writeText(url);
+      toast("Success!!", { description: "Copy TO ClipBoard!!" });
+    } catch {
+      toast("Error!!", { description: "Fail To Copy!!" });
+    }
+  };
   return (
     <>
       <Dialog>
@@ -48,12 +57,13 @@ export default function ImageCarousel({ fileUrls, children, index, fileType, dow
                       <button onClick={() => rotateImg(index)}>
                         <RotateCw />
                       </button>
-                      {dowload && (
+                      {download && (
                         <div className="flex gap-4">
-                          <DeletePromt urls={[url]} setLoading={setLoading} fileType={fileType}>
+                          <DownloadButton imageUrl={url} fileName={`d-cloud-download-${fileType}-${index}.${piptype}`} />
+                          <Copy onClick={() => copyURL(url)} />
+                          <DeletePromt urls={[url]}>
                             <Trash2 stroke="red" />
                           </DeletePromt>
-                          <DownloadButton imageUrl={url} fileName={`d-cloud-download-${fileType}-${index}.${piptype}`} />
                         </div>
                       )}
                     </div>

@@ -1,15 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function useFiles(type: string) {
-  const [files, setFile] = useState<FileList | null>();
+  const [files, setFile] = useState<FileList>();
   const [isLoading, setLoading] = useState(false);
+  const [fileUrls, setFilesUrls] = useState<string[]>([]);
 
   const fileSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("select");
     const temp = event.target.files;
-    setFile(temp);
+    console.log(temp);
+    if (temp) setFile(temp);
   };
-  const fileUrls = files ? Array.from(files).map((file) => URL.createObjectURL(file)) : [];
+  useEffect(() => {
+    if (files) setFilesUrls(Array.from(files).map((file) => URL.createObjectURL(file)));
+  }, [files]);
 
   const uploadFiles = async () => {
     if (!files || files.length === 0) {
@@ -35,7 +40,8 @@ export default function useFiles(type: string) {
         throw new Error(error.msg || ` ${response.status}`);
       }
       toast("Files uploaded successfully!");
-      setFile(null);
+      setFile(undefined);
+      setFilesUrls([]);
     } catch (error) {
       console.error("Error uploading files:", error);
       toast("Failed to upload files", { description: `Error:${(error as Error).message}` });
@@ -44,5 +50,5 @@ export default function useFiles(type: string) {
     }
   };
 
-  return { fileSelected, fileUrls, uploadFiles, files, isLoading };
+  return { fileSelected, fileUrls, uploadFiles, files, isLoading, setFile, setFilesUrls };
 }

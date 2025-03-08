@@ -1,14 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
 import { toast } from "sonner";
+import { FileContext } from "./Gallery";
 
 export const convertUrlId = (url: string) => {
   const { pathname } = new URL(url);
   const fileId = pathname.split("/")[1];
   return fileId;
 };
-export default function DeletePromt({ children, urls, setLoading, fileType }: { children: React.ReactElement; urls: string[]; setLoading: React.Dispatch<React.SetStateAction<boolean>>; fileType: string }) {
+export default function DeletePromt({ children, urls }: { children: React.ReactElement; urls: string[] }) {
+  const files = useContext(FileContext);
+  if (!files) return <>{children}</>;
+  const { setLoading, fileType, setFilesUrls } = files;
+
   const deleteFiles = async () => {
     setLoading(true);
     const files: string[] = [];
@@ -18,8 +23,14 @@ export default function DeletePromt({ children, urls, setLoading, fileType }: { 
     });
     try {
       const res = await fetch("/api/deleteFiles", { method: "PUT", body: JSON.stringify({ files, type: fileType }) });
-      if (res.status === 200) toast("Success!!", { description: `${urls.length} Files were Successfully Deleted` });
-      else {
+      if (res.status === 200) {
+        toast("Success!!", { description: `${urls.length} Files were Successfully Deleted` });
+        setFilesUrls((pre) => {
+          console.log(pre);
+          console.log(pre.filter((url) => !files.includes(url) || !files.includes(`convertUrlIdurl}`)));
+          return pre.filter((url) => !urls.includes(url) || !files.includes(`${process.env.NEXT_PUBLIC_AWS_URL}/${url}`));
+        });
+      } else {
         const { msg }: { msg: string } = await res.json();
         throw Error(msg);
       }

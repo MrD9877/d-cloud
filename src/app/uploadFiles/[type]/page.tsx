@@ -11,7 +11,7 @@ export default function UploadType() {
   const pathname = usePathname();
   const type = pathname.split("/");
   const fileType = type[type.length - 1];
-  const { fileSelected, fileUrls, uploadFiles, files, isLoading } = useFiles(fileType);
+  const { fileSelected, fileUrls, uploadFiles, files, isLoading, setFilesUrls } = useFiles(fileType);
   if (fileType !== "video" && fileType !== "image") return <>wrong</>;
   return (
     <div>
@@ -26,13 +26,13 @@ export default function UploadType() {
               <span className="font-semibold">Click to upload</span> or drag and drop
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Atleast 2 images</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">max 10 images</p>
           </div>
-          <input id="dropzone-file" className="hidden" onChange={fileSelected} type="file" accept={`${fileType}/*`} multiple></input>
+          <input id="dropzone-file" className="hidden" onChange={fileSelected} type="file" accept={`${fileType}/*`} multiple />
         </label>
       </div>
       <div>
-        <Gallery fileUrls={fileUrls} fileType={fileType} />
+        <Gallery fileUrls={fileUrls} fileType={fileType} setFilesUrls={setFilesUrls} />
       </div>
       <div className="w-screen">
         {files && (

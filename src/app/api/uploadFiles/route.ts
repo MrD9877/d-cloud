@@ -5,10 +5,12 @@ import dbConnect from "../utility/connectMongo";
 import { authUser } from "../utility/authUser";
 import { cookies } from "next/headers";
 import { User } from "@/schema/user";
+import { uploadVideoMultipart } from "../utility/awsVideo";
 
 export async function POST(request: Request) {
   await dbConnect();
   const cookieStore = await cookies();
+  console.log("upload");
   try {
     const userData = await authUser(cookieStore);
     if (!userData || !userData.email) return new Response(JSON.stringify({ msg: "unAuth" }), { status: 401 });
@@ -25,7 +27,8 @@ export async function POST(request: Request) {
       if (file instanceof File) {
         const fileId = generateRandom(32);
         const buffer = Buffer.from(await file.arrayBuffer());
-        await uploadImage(buffer, fileId, type === "image" ? "png" : "mp4");
+        const upload = type === "image" ? await uploadImage(buffer, fileId, "png") : await uploadVideoMultipart(file, fileId);
+        void upload;
         filesUploadedOnaws.push({ fileId });
       }
     }

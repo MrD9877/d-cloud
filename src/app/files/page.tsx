@@ -3,6 +3,7 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { MoveRight, Image, Video, File } from "lucide-react";
 import { useRouter } from "next/navigation";
+import TriggerNav from "@/components/TriggerNav";
 
 const items = [
   {
@@ -29,6 +30,7 @@ export default function FilesPage() {
   };
   return (
     <div>
+      <TriggerNav />
       <div className="w-screen h-screen p-4 flex flex-col gap-4">
         {items.map((item) => {
           return (
