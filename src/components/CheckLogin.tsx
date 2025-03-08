@@ -13,7 +13,7 @@ export default function CheckLogin() {
   const router = useRouter();
   useEffect(() => {
     setRefreshToken(getCookie("refreshToken"));
-  }, []);
+  }, [pathname]);
   if (pathname === "/register" || pathname === "/login" || refreshToken) return <></>;
 
   return (

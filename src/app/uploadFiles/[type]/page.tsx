@@ -2,19 +2,23 @@
 
 import Gallery from "@/components/Gallery";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { TopFilesNav } from "@/components/TopFilesNav";
 import useFiles from "@/hooks/useFiles";
 import { Upload } from "lucide-react";
 import { usePathname } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 
 export default function UploadType() {
   const pathname = usePathname();
   const type = pathname.split("/");
   const fileType = type[type.length - 1];
+  const [viewSelectBox, setViewSelect] = useState(false);
+  const [selected, setSelected] = useState<string[]>([]);
   const { fileSelected, fileUrls, uploadFiles, files, isLoading, setFilesUrls } = useFiles(fileType);
   if (fileType !== "video" && fileType !== "image") return <>wrong</>;
   return (
     <div>
+      <TopFilesNav viewSelectBox={viewSelectBox} setViewSelect={setViewSelect} />
       {isLoading && <LoadingSpinner className="w-screen h-full absolute z-50 bg-white/25" />}
       <div className="flex items-center justify-center w-full px-4 my-4">
         <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-indigo-500 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 ">
@@ -32,7 +36,7 @@ export default function UploadType() {
         </label>
       </div>
       <div>
-        <Gallery fileUrls={fileUrls} fileType={fileType} setFilesUrls={setFilesUrls} />
+        <Gallery fileUrls={fileUrls} fileType={fileType} setFilesUrls={setFilesUrls} viewSelectBox={viewSelectBox} setViewSelect={setViewSelect} selected={selected} setSelected={setSelected} />
       </div>
       <div className="w-screen">
         {files && (

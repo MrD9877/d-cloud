@@ -1,10 +1,9 @@
 import Image from "next/image";
-import React, { useEffect, useRef, useState } from "react";
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from "react";
 import ImageCarousel from "./ImageCarousel";
 import { PlayIcon } from "lucide-react";
 import { createContext } from "react";
 import LoadingSpinner from "./LoadingSpinner";
-import { useLongPress } from "react-use";
 import { useRouter } from "next/navigation";
 
 interface FileContextType {
@@ -21,6 +20,10 @@ interface Gallery {
   setFilesUrls: React.Dispatch<React.SetStateAction<string[]>>;
   view?: number;
   page?: number;
+  setViewSelect: Dispatch<SetStateAction<boolean>>;
+  viewSelectBox: boolean;
+  setSelected: React.Dispatch<React.SetStateAction<string[]>>;
+  selected: string[];
 }
 
 export const FileContext = createContext<FileContextType | undefined>(undefined);
@@ -37,15 +40,12 @@ function VideoPlayer({ url }: { url: string }) {
   );
 }
 
-export default function Gallery({ fileUrls, fileType, download = false, setFilesUrls, view = 50, page = 1 }: Gallery) {
+export default function Gallery({ fileUrls, fileType, download = false, setFilesUrls, view = 50, page = 1, viewSelectBox, setViewSelect, selected, setSelected }: Gallery) {
   const [loading, setLoading] = useState(false);
-  const [selected, setSelected] = useState<string[]>([]);
   const [checked, setChecked] = useState<{ [key: number]: boolean }>({});
-  const [viewSelectBox, setViewSelect] = useState(false);
+
   const router = useRouter();
-  const longPressHandlers = useLongPress(() => {
-    setViewSelect(true);
-  });
+
   const handeleCheck = (index: number, url: string) => {
     if (checked[index]) {
       setChecked((pre) => ({ ...pre, [index]: false }));
@@ -55,19 +55,27 @@ export default function Gallery({ fileUrls, fileType, download = false, setFiles
       setChecked((pre) => ({ ...pre, [index]: true }));
     }
   };
-  useEffect(() => {
-    router.beforePopState(({ as }) => {
-      if (as !== router.asPath) {
-        // Will run when leaving the current page; on back/forward actions
-        // Add your logic here, like toggling the modal state
+
+  const handlePopState = useCallback(
+    (e: PopStateEvent) => {
+      if (viewSelectBox) {
+        e.preventDefault();
+        window.history.pushState(null, "", window.location.pathname);
+        router.replace("/files/image");
+        setViewSelect(false);
       }
-      return true;
-    });
+    },
+    [router, viewSelectBox]
+  );
+  useEffect(() => {
+    window.history.pushState(null, "", window.location.pathname);
+    window.addEventListener("popstate", handlePopState);
 
     return () => {
-      router.beforePopState(() => true);
+      window.removeEventListener("popstate", handlePopState);
     };
-  }, [router]);
+  }, [router, handlePopState]);
+
   return (
     <>
       <div className="flex flex-wrap px-4 my-2 gap-2 justify-center items-center">
@@ -83,7 +91,7 @@ export default function Gallery({ fileUrls, fileType, download = false, setFiles
                   </div>
                 )}
                 <ImageCarousel index={index}>
-                  <div {...longPressHandlers}>{fileType === "video" ? <VideoPlayer url={url} /> : <div className="relative w-[150px] h-[150px] mx-auto">{<Image width={150} height={150} src={url} alt="img" loading="lazy" onContextMenu={(e) => e.preventDefault()} className="absolute  inset-0 w-full h-full object-cover rounded-lg bg-gray-600 " />}</div>}</div>
+                  <div>{fileType === "video" ? <VideoPlayer url={url} /> : <div className="relative w-[150px] h-[150px] mx-auto">{<Image width={150} height={150} src={url} alt="img" loading="lazy" className="inset-0 w-full h-full object-cover rounded-lg bg-gray-600 " />}</div>}</div>
                 </ImageCarousel>
               </div>
             );
