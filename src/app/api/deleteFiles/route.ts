@@ -3,7 +3,7 @@ import dbConnect from "../utility/connectMongo";
 import { authUser } from "../utility/authUser";
 import { cookies } from "next/headers";
 import { User } from "@/schema/user";
-import { deleteFromAws } from "@/utility/deleteFromAws";
+import { deleteImages } from "../utility/awsBucket";
 
 export async function POST(request: Request) {
   await dbConnect();
@@ -15,7 +15,10 @@ export async function POST(request: Request) {
     const userData = await authUser(cookieStore);
     if (!userData || typeof userData === "string" || !userData.email) return new Response(JSON.stringify({ msg: "unAuth" }), { status: 401 });
     const email = userData.email;
-    await deleteFromAws(files);
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      await deleteImages(file);
+    }
     const deletefiles = await User.updateOne({ email }, { $pull: { [type]: { fileId: { $in: files } } } });
     if (deletefiles.acknowledged) return NextResponse.json({ msg: "Files Deleted" }, { status: 200 });
     return NextResponse.json({ message: "No file found" }, { status: 404 });
