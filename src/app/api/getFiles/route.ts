@@ -12,7 +12,7 @@ export async function GET(request: Request) {
   if (type !== "image" && type !== "video") return NextResponse.json({ message: "Wrong or missing params" }, { status: 400 });
   try {
     const userData = await authUser(cookieStore);
-    if (!userData || !userData.email) return new Response(JSON.stringify({ msg: "unAuth" }), { status: 401 });
+    if (!userData || typeof userData === "string" || !userData.email) return new Response(JSON.stringify({ msg: "unAuth" }), { status: 401 });
     const email = userData.email;
     console.log({ email });
     const files = await User.findOne({ email }).select(type).exec();

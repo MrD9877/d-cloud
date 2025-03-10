@@ -12,7 +12,7 @@ export async function POST(request: Request) {
   console.log("upload");
   try {
     const userData = await authUser(cookieStore);
-    if (!userData || !userData.email) return new Response(JSON.stringify({ msg: "unAuth" }), { status: 401 });
+    if (!userData || typeof userData === "string" || !userData.email) return new Response(JSON.stringify({ msg: "unAuth" }), { status: 401 });
     const email = userData.email;
     const formData = await request.formData();
     const files = formData.getAll("files");

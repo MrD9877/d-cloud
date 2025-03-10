@@ -20,7 +20,7 @@ export async function PUT(request: Request) {
   if ((type !== "image" && type !== "video") || !files || !Array.isArray(files)) return NextResponse.json({ message: "Wrong or missing params" }, { status: 400 });
   try {
     const userData = await authUser(cookieStore);
-    if (!userData || !userData.email) return new Response(JSON.stringify({ msg: "unAuth" }), { status: 401 });
+    if (!userData || typeof userData === "string" || !userData.email) return new Response(JSON.stringify({ msg: "unAuth" }), { status: 401 });
     const email = userData.email;
     await deleteFromAws(files);
     const deletefiles = await User.updateOne({ email }, { $pull: { [type]: { fileId: { $in: files } } } });
