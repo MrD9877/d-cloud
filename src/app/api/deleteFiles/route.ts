@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { User } from "@/schema/user";
 import { deleteFromAws } from "@/utility/deleteFromAws";
 
-export async function PUT(request: Request) {
+export async function POST(request: Request) {
   await dbConnect();
   const cookieStore = await cookies();
   const body = await request.json();

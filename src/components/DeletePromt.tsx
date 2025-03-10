@@ -22,7 +22,7 @@ export default function DeletePromt({ children, urls }: { children: React.ReactE
       files.push(id);
     });
     try {
-      const res = await fetch("/api/deleteFiles", { method: "PUT", body: JSON.stringify({ files, type: fileType }) });
+      const res = await fetch("/api/deleteFiles", { method: "POST", body: JSON.stringify({ files, type: fileType }) });
       if (res.status === 200) {
         toast("Success!!", { description: `${urls.length} Files were Successfully Deleted` });
         setFilesUrls(fileUrls.filter((url) => !urls.includes(url) || !files.includes(`${process.env.NEXT_PUBLIC_AWS_URL}/${url}`)));
