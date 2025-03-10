@@ -1,6 +1,6 @@
 {
   "functions": {
-    "app/api/mySlowFunction/route.ts": {
+    "app/api/auth/[...nextauth]/route.ts": {
       "maxDuration": 60
     }
   }
