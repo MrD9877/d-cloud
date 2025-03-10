@@ -3,6 +3,9 @@ import GoogleProvider from "next-auth/providers/google";
 import { cookies } from "next/headers";
 import { tokenGenerator } from "../../utility/tokenGenerators";
 import { User } from "@/schema/user";
+export const config = {
+  maxDuration: 30,
+};
 
 const handler = NextAuth({
   providers: [
