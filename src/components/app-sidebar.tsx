@@ -47,7 +47,7 @@ export function AppSidebar() {
         <SidebarContent>
           <SidebarGroup className="justify-between flex-row items-center pb-0 pr-4 pt-3">
             {/* app icon  */}
-            <Link href={"/home"} onClick={() => toggleSidebar()}>
+            <Link href={"/"} onClick={() => toggleSidebar()}>
               <Image width={40} height={40} src={"/images/icon.ico"} alt="icon" />
             </Link>
             {/* dark light mode  */}

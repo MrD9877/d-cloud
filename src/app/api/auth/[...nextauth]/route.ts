@@ -15,6 +15,9 @@ const handler = NextAuth({
     signIn: "/signin",
   },
   callbacks: {
+    async redirect({ baseUrl }) {
+      return baseUrl;
+    },
     async signIn({ user }) {
       const email = user.email?.trim().toLowerCase();
       const userName = user.name?.trim().toLowerCase();
