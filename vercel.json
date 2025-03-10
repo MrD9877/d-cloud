@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "api/deleteFiles": {
+      "maxDuration": 30
+    },
+    "api/longProcess": {
+      "maxDuration": 60
+    }
+  }
+}
