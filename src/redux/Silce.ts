@@ -1,6 +1,9 @@
-import { NewFilesType } from "@/hooks/useFiles";
 import { createSlice, configureStore } from "@reduxjs/toolkit";
 
+export type FilesUploadSelectedType = {
+  name: string;
+  url: string;
+};
 // setFilesUrls,
 export type StoreState = {
   fileUrls: string[];
@@ -11,7 +14,7 @@ export type StoreState = {
   selected: string[];
   loading: boolean;
   download: boolean;
-  files: NewFilesType | undefined;
+  filesUploadSelected: FilesUploadSelectedType[];
 };
 
 const initialState: StoreState = {
@@ -23,7 +26,7 @@ const initialState: StoreState = {
   selected: [],
   loading: false,
   download: false,
-  files: undefined,
+  filesUploadSelected: [],
 };
 
 const userSlice = createSlice({
@@ -37,6 +40,9 @@ const userSlice = createSlice({
       state.fileType = action.payload;
     },
     setViewSelectBox: (state, action: { payload: boolean; type: string }) => {
+      if (action.payload === false) {
+        state.selected = [];
+      }
       state.viewSelectBox = action.payload;
     },
     setViewState: (state, action: { payload: number; type: string }) => {
@@ -58,19 +64,19 @@ const userSlice = createSlice({
       state.fileUrls = state.fileUrls.filter((url) => !action.payload.includes(url));
       state.selected = [];
       state.viewSelectBox = false;
-      const removedFile = state.files?.find((file) => action.payload.includes(file.previewUrl));
-      state.files = state.files?.filter((file) => !action.payload.includes(file.previewUrl));
-      if (removedFile) {
-        URL.revokeObjectURL(removedFile.previewUrl);
-      }
+      state.filesUploadSelected = state.filesUploadSelected.filter((obj) => {
+        console.log(obj.url);
+        console.log(action.payload.includes(obj.url));
+        return !action.payload.includes(obj.url);
+      });
     },
-    setFileState: (state, action: { payload: NewFilesType | undefined; type: string }) => {
-      state.files = action.payload;
+    setFilesUploadSelectedState: (state, action: { payload: FilesUploadSelectedType[]; type: string }) => {
+      state.filesUploadSelected = action.payload;
     },
   },
 });
 
-export const { setFilesUrls, setFileType, setViewSelectBox, setViewState, setPageState, setSelectedState, setLoadingState, setDownLoadState, deleteFilesRedux, setFileState } = userSlice.actions;
+export const { setFilesUrls, setFileType, setViewSelectBox, setViewState, setPageState, setSelectedState, setLoadingState, setDownLoadState, deleteFilesRedux, setFilesUploadSelectedState } = userSlice.actions;
 
 export const store = configureStore({
   reducer: userSlice.reducer,

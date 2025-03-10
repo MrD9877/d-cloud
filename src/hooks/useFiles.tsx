@@ -1,7 +1,7 @@
 import { setFileType, store, StoreState } from "@/redux/Silce";
-import { setFile, setFilesUrlsFn, setLoading } from "@/utility/reduxFn";
+import { setFilesUploadSelected, setFilesUrlsFn, setLoading } from "@/utility/reduxFn";
 import { usePathname } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
 export type NewFilesType = {
@@ -22,18 +22,30 @@ export default function useFiles() {
   const pathname = usePathname();
   const type = pathname.split("/");
   const fileType = type[type.length - 1];
-  const { loading, files } = useSelector((state: StoreState) => state);
+  const [files, setFile] = useState<FileList>();
+  const { loading, filesUploadSelected } = useSelector((state: StoreState) => ({ loading: state.loading, filesUploadSelected: state.filesUploadSelected }));
+  useEffect(() => {
+    if (filesUploadSelected.length === 0) {
+      setFile(undefined);
+    }
+  }, [filesUploadSelected]);
 
   const fileSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
     const temp = event.target.files;
+    const urls: string[] = [];
     if (temp) {
-      const newFiles = Array.from(temp).map((file) => ({
-        ...file,
-        previewUrl: URL.createObjectURL(file),
-      }));
-      setFile(newFiles);
+      setFile(temp);
+      const newFiles = Array.from(temp).map((file) => {
+        const url = URL.createObjectURL(file);
+        urls.push(url);
+        return {
+          name: file.name,
+          url,
+        };
+      });
+      setFilesUploadSelected(newFiles);
     }
-    if (temp) setFilesUrlsFn(Array.from(temp).map((file) => URL.createObjectURL(file)));
+    if (temp) setFilesUrlsFn(urls);
   };
   useEffect(() => {
     if (fileType === "image" || fileType === "video") store.dispatch(setFileType(fileType));
@@ -48,9 +60,9 @@ export default function useFiles() {
     formData.append("type", fileType);
 
     Array.from(files).forEach((file) => {
-      formData.append("files", file);
+      console.log(filesUploadSelected.some((fileObj) => fileObj.name === file.name));
+      if (filesUploadSelected.some((fileObj) => fileObj.name === file.name)) formData.append("files", file);
     });
-
     try {
       setLoading(true);
       const response = await fetch("/api/uploadFiles", {
@@ -63,7 +75,7 @@ export default function useFiles() {
         throw new Error(error.msg || ` ${response.status}`);
       }
       toast("Files uploaded successfully!");
-      setFile(undefined);
+      setFilesUploadSelected([]);
       setFilesUrlsFn([]);
     } catch (error) {
       toast("Failed to upload files", { description: `Error:${(error as Error).message}` });
@@ -72,5 +84,5 @@ export default function useFiles() {
     }
   };
 
-  return { fileSelected, uploadFiles, files, fileType, loading };
+  return { fileSelected, uploadFiles, filesUploadSelected, fileType, loading };
 }

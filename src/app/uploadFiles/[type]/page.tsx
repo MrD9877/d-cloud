@@ -4,12 +4,15 @@ import Gallery from "@/components/Gallery";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { TopFilesNav } from "@/components/TopFilesNav";
 import useFiles from "@/hooks/useFiles";
+import { StoreState } from "@/redux/Silce";
 import { setDownLoad, setFilesUrlsFn } from "@/utility/reduxFn";
 import { Upload } from "lucide-react";
 import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 export default function UploadType() {
-  const { fileSelected, uploadFiles, files, fileType, loading } = useFiles();
+  const { fileSelected, uploadFiles, filesUploadSelected, fileType, loading } = useFiles();
+  const viewSelectBox = useSelector((state: StoreState) => state.viewSelectBox);
   useEffect(() => {
     setDownLoad(false);
     setFilesUrlsFn([]);
@@ -39,8 +42,8 @@ export default function UploadType() {
         <Gallery />
       </div>
       <div className="w-screen">
-        {files && (
-          <button disabled={loading} className=" mx-auto flex justify-center gap-2 items-center my-5 bg-blue-700 rounded-lg py-2 px-3" onClick={uploadFiles}>
+        {filesUploadSelected.length > 0 && (
+          <button disabled={loading || viewSelectBox} style={{ opacity: loading || viewSelectBox ? 0.65 : 1 }} className=" mx-auto flex justify-center gap-2 items-center my-5 bg-blue-700 rounded-lg py-2 px-3" onClick={uploadFiles}>
             UpLoad Files
             <Upload />
           </button>

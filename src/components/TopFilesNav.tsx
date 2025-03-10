@@ -33,12 +33,12 @@ function ViewFilesBTN() {
 }
 
 function UploadFilesBTN() {
-  const { viewSelectBox } = useSelector((state: StoreState) => state);
+  const { viewSelectBox, selected } = useSelector((state: StoreState) => state);
 
   return (
     <>
       {viewSelectBox && (
-        <DeletePromt urls={[]}>
+        <DeletePromt urls={selected}>
           <Trash2 stroke="red" />
         </DeletePromt>
       )}

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 const items = [
   {
     title: "UpLoad Files",
-    url: "/upload",
+    url: "/uploadFiles",
     icon: File,
   },
   {

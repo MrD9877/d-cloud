@@ -13,10 +13,9 @@ export const convertUrlId = (url: string) => {
   return fileId;
 };
 export default function DeletePromt({ children, urls }: { children: React.ReactElement; urls: string[] }) {
-  const { fileType, fileUrls } = useSelector((state: StoreState) => state);
+  const { fileType, fileUrls, download } = useSelector((state: StoreState) => state);
   const queryClient = useQueryClient();
   const deleteFiles = async () => {
-    setLoading(true);
     const files: string[] = [];
     urls.forEach((url) => {
       const id = convertUrlId(url);
@@ -27,16 +26,15 @@ export default function DeletePromt({ children, urls }: { children: React.ReactE
       if (res.status === 200) {
         toast("Success!!", { description: `${urls.length} Files were Successfully Deleted` });
         setFilesUrls(fileUrls.filter((url) => !urls.includes(url) || !files.includes(`${process.env.NEXT_PUBLIC_AWS_URL}/${url}`)));
-        store.dispatch(deleteFilesRedux(urls));
-        mutateFiles.mutate();
+        return true;
       } else {
         const { msg }: { msg: string } = await res.json();
         throw Error(msg);
       }
     } catch (err) {
       toast("Error!!", { description: `${(err as Error).message}` });
+      return false;
     } finally {
-      setLoading(false);
     }
   };
 
@@ -45,6 +43,17 @@ export default function DeletePromt({ children, urls }: { children: React.ReactE
       queryClient.invalidateQueries({ queryKey: ["files", fileType] });
     },
   });
+
+  const deleteFn = async () => {
+    setLoading(true);
+    if (download) {
+      const res = await deleteFiles();
+      if (!res) return;
+    }
+    store.dispatch(deleteFilesRedux(urls));
+    mutateFiles.mutate();
+    setLoading(false);
+  };
 
   return (
     <div>
@@ -60,7 +69,7 @@ export default function DeletePromt({ children, urls }: { children: React.ReactE
             </DrawerHeader>
             <DrawerFooter>
               <DrawerClose asChild>
-                <Button className="bg-red-500" onClick={deleteFiles}>
+                <Button className="bg-red-500" onClick={deleteFn}>
                   Delete
                 </Button>
               </DrawerClose>

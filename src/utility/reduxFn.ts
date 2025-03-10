@@ -1,5 +1,4 @@
-import { NewFilesType } from "@/hooks/useFiles";
-import { setDownLoadState, setFileState, setFilesUrls, setLoadingState, setPageState, setSelectedState, setViewSelectBox, setViewState, store } from "@/redux/Silce";
+import { FilesUploadSelectedType, setDownLoadState, setFilesUploadSelectedState, setFilesUrls, setLoadingState, setPageState, setSelectedState, setViewSelectBox, setViewState, store } from "@/redux/Silce";
 export function setFilesUrlsFn(arr: string[]) {
   store.dispatch(setFilesUrls(arr));
 }
@@ -21,6 +20,7 @@ export function setSelected(arr: string[]) {
 export function setDownLoad(boolean: boolean) {
   store.dispatch(setDownLoadState(boolean));
 }
-export function setFile(files: NewFilesType | undefined) {
-  store.dispatch(setFileState(files));
+
+export function setFilesUploadSelected(files: FilesUploadSelectedType[]) {
+  store.dispatch(setFilesUploadSelectedState(files));
 }

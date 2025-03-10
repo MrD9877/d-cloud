@@ -29,6 +29,8 @@ export async function POST(request: Request) {
         const upload = type === "image" ? await uploadImage(buffer, fileId, "png") : await uploadVideoMultipart(file, fileId);
         void upload;
         filesUploadedOnaws.push({ fileId });
+      } else {
+        throw Error("file is Not Instance of a File");
       }
     }
     const user = await User.updateOne({ email }, { $push: { [type]: { $each: filesUploadedOnaws } } });
