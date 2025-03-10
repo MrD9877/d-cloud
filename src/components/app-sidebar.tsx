@@ -1,10 +1,12 @@
 "use client";
 import React from "react";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
-import { Download, Home, LogIn, Upload, UserRound } from "lucide-react";
+import { Download, Home, LogIn, LogOut, Upload } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import useToken from "@/hooks/useToken";
+import { signOutFn } from "@/utility/signOut";
 
 const items = [
   {
@@ -28,17 +30,17 @@ const items = [
     url: "/login",
     icon: LogIn,
   },
-  {
-    title: "Profile",
-    url: "/profile",
-    icon: UserRound,
-  },
+  // {
+  //   title: "Profile",
+  //   url: "/profile",
+  //   icon: UserRound,
+  // },
 ];
 
 export function AppSidebar() {
   const pathname = usePathname();
   const { toggleSidebar } = useSidebar();
-
+  const token = useToken();
   return (
     <>
       <Sidebar>
@@ -54,18 +56,31 @@ export function AppSidebar() {
             <SidebarGroupLabel>Application</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <Link href={item.url} onClick={() => toggleSidebar()}>
-                      <SidebarMenuButton asChild isActive={pathname === item.url} className="text-xl">
-                        <div>
-                          <item.icon className="h-[19px] w-[19px]" />
-                          <span>{item.title}</span>
-                        </div>
-                      </SidebarMenuButton>
-                    </Link>
+                {items.map((item) => {
+                  if (token && item.title === "Login") return;
+                  return (
+                    <SidebarMenuItem key={item.title}>
+                      <Link href={item.url} onClick={() => toggleSidebar()}>
+                        <SidebarMenuButton asChild isActive={pathname === item.url} className="text-xl">
+                          <div>
+                            <item.icon className="h-[19px] w-[19px]" />
+                            <span>{item.title}</span>
+                          </div>
+                        </SidebarMenuButton>
+                      </Link>
+                    </SidebarMenuItem>
+                  );
+                })}
+                {token && (
+                  <SidebarMenuItem>
+                    <SidebarMenuButton onClick={signOutFn} className="text-xl">
+                      <div className="flex items-center gap-2 text-red-600">
+                        <LogOut className="h-[19px] w-[19px]" />
+                        <span>SignOut</span>
+                      </div>
+                    </SidebarMenuButton>
                   </SidebarMenuItem>
-                ))}
+                )}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>

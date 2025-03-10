@@ -6,9 +6,12 @@ import { toast } from "sonner";
 import ErrorPage from "@/components/ErrorPage";
 import TopHeader from "@/components/TopHeader";
 import WeButton from "@/components/WeButton";
+import { signIn } from "next-auth/react";
+import useToken from "@/hooks/useToken";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const token = useToken();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [error, submitAction, isPending] = useActionState(async (previousState: any, formData: FormData) => {
     const data = Object.fromEntries(formData);
@@ -72,6 +75,13 @@ export default function RegisterPage() {
             </div>
           </div>
           <WeButton btnDisable={isPending} type="submit" btnText={"Register"} />
+          {!token && (
+            <div className="mx-auto flex justify-center">
+              <button type="button" onClick={() => signIn("google")} className="border border-input bg-white text-black shadow-xs hover:bg-black hover:text-white w-[327px] h-[56px] rounded-3xl text-nowrap">
+                Login with Google
+              </button>
+            </div>
+          )}
         </div>
       </form>
 
