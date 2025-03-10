@@ -3,14 +3,7 @@ import dbConnect from "../utility/connectMongo";
 import { authUser } from "../utility/authUser";
 import { cookies } from "next/headers";
 import { User } from "@/schema/user";
-import { deleteImages } from "../utility/awsBucket";
-
-async function deleteFromAws(files: string[]) {
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
-    await deleteImages(file);
-  }
-}
+import { deleteFromAws } from "@/utility/deleteFromAws";
 
 export async function PUT(request: Request) {
   await dbConnect();
