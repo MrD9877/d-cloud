@@ -1,7 +1,8 @@
+import { setLoading, setSelected, setViewSelect } from "@/utility/reduxFn";
 import { Download } from "lucide-react";
-
-const DownloadButton = ({ imageUrl, fileName }: { imageUrl: string; fileName: string }) => {
-  const downloadImage = async () => {
+type DownBtn = { imageUrl?: string; fileName?: string; urls?: string[]; fileType?: string };
+const DownloadButton = ({ imageUrl, fileName, urls, fileType }: DownBtn) => {
+  const downloadImage = async (imageUrl: string, fileName: string) => {
     try {
       const response = await fetch(imageUrl, {
         mode: "cors",
@@ -20,11 +21,27 @@ const DownloadButton = ({ imageUrl, fileName }: { imageUrl: string; fileName: st
       console.error("Error downloading image:", error);
     }
   };
+  const downLoadFiles = async () => {
+    if (urls && fileType) {
+      setLoading(true);
+      for (let i = 0; i < urls.length; i++) {
+        const url = urls[i];
+        console.log(url);
+        const piptype = fileType === "image" ? "png" : "mp4";
+        await downloadImage(url, `d-cloud-download-${fileType}-${url.slice(-10)}.${piptype}`);
+      }
+      setSelected([]);
+      setViewSelect(false);
+      setLoading(false);
+    } else {
+      if (imageUrl && fileName) downloadImage(imageUrl, fileName);
+    }
+  };
 
   // Example usage
 
   return (
-    <button onClick={downloadImage}>
+    <button onClick={downLoadFiles}>
       <Download />
     </button>
   );

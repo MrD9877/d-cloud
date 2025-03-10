@@ -5,6 +5,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import CheckLogin from "@/components/CheckLogin";
 import QueryProvider from "@/components/providers/QueryProvider";
+import StoreProvider from "@/components/providers/StoreProvider";
 
 export const metadata: Metadata = {
   title: "DCloud",
@@ -19,16 +20,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <QueryProvider>
-          <SidebarProvider>
-            <main>
-              <AppSidebar />
-              {children}
-              <CheckLogin />
-              <Toaster />
-            </main>
-          </SidebarProvider>
-        </QueryProvider>
+        <StoreProvider>
+          <QueryProvider>
+            <SidebarProvider>
+              <main>
+                <AppSidebar />
+                {children}
+                <CheckLogin />
+                <Toaster />
+              </main>
+            </SidebarProvider>
+          </QueryProvider>
+        </StoreProvider>
       </body>
     </html>
   );

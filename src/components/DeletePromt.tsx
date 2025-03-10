@@ -1,8 +1,11 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
 import { toast } from "sonner";
-import { FileContext } from "./Gallery";
+import { useSelector } from "react-redux";
+import { deleteFilesRedux, setFilesUrls, store, StoreState } from "@/redux/Silce";
+import { setLoading } from "@/utility/reduxFn";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const convertUrlId = (url: string) => {
   const { pathname } = new URL(url);
@@ -10,10 +13,8 @@ export const convertUrlId = (url: string) => {
   return fileId;
 };
 export default function DeletePromt({ children, urls }: { children: React.ReactElement; urls: string[] }) {
-  const files = useContext(FileContext);
-  if (!files) return <>{children}</>;
-  const { setLoading, fileType, setFilesUrls } = files;
-
+  const { fileType, fileUrls } = useSelector((state: StoreState) => state);
+  const queryClient = useQueryClient();
   const deleteFiles = async () => {
     setLoading(true);
     const files: string[] = [];
@@ -25,11 +26,9 @@ export default function DeletePromt({ children, urls }: { children: React.ReactE
       const res = await fetch("/api/deleteFiles", { method: "PUT", body: JSON.stringify({ files, type: fileType }) });
       if (res.status === 200) {
         toast("Success!!", { description: `${urls.length} Files were Successfully Deleted` });
-        setFilesUrls((pre) => {
-          console.log(pre);
-          console.log(pre.filter((url) => !files.includes(url) || !files.includes(`convertUrlIdurl}`)));
-          return pre.filter((url) => !urls.includes(url) || !files.includes(`${process.env.NEXT_PUBLIC_AWS_URL}/${url}`));
-        });
+        setFilesUrls(fileUrls.filter((url) => !urls.includes(url) || !files.includes(`${process.env.NEXT_PUBLIC_AWS_URL}/${url}`)));
+        store.dispatch(deleteFilesRedux(urls));
+        mutateFiles.mutate();
       } else {
         const { msg }: { msg: string } = await res.json();
         throw Error(msg);
@@ -40,10 +39,17 @@ export default function DeletePromt({ children, urls }: { children: React.ReactE
       setLoading(false);
     }
   };
+
+  const mutateFiles = useMutation({
+    mutationFn: async () => {
+      queryClient.invalidateQueries({ queryKey: ["files", fileType] });
+    },
+  });
+
   return (
     <div>
       <Drawer>
-        <DrawerTrigger asChild>
+        <DrawerTrigger asChild className="flex justify-center items-center">
           <button>{children}</button>
         </DrawerTrigger>
         <DrawerContent>

@@ -40,7 +40,7 @@ function useCarousel() {
   return context;
 }
 
-function Carousel({ orientation = "horizontal", opts, setApi, plugins, className, children, index, ...props }: React.ComponentProps<"div"> & CarouselProps & { index: number }) {
+function Carousel({ orientation = "horizontal", opts, setApi, plugins, className, children, ...props }: React.ComponentProps<"div"> & CarouselProps) {
   const [carouselRef, api] = useEmblaCarousel(
     {
       ...opts,
@@ -93,12 +93,6 @@ function Carousel({ orientation = "horizontal", opts, setApi, plugins, className
       api?.off("select", onSelect);
     };
   }, [api, onSelect]);
-
-  React.useEffect(() => {
-    if (index) {
-      api?.scrollTo(index);
-    }
-  }, [api, index]);
 
   return (
     <CarouselContext.Provider

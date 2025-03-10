@@ -1,7 +1,7 @@
 import { PauseIcon, PlayIcon } from "lucide-react";
 import { useRef, useState } from "react";
 
-export default function VideoPlayerCarousel({ url, rotateDeg, index }: { url: string; index: number; rotateDeg: { [key: number]: number } }) {
+export default function VideoPlayerCarousel({ url, rotateDeg }: { url: string; rotateDeg: number }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [play, setPlay] = useState(false);
   const [focus, setFocus] = useState(false);
@@ -39,7 +39,7 @@ export default function VideoPlayerCarousel({ url, rotateDeg, index }: { url: st
           )}
         </div>
       )}
-      <video ref={videoRef} width={1000} height={1000} src={url} style={{ rotate: rotateDeg && (rotateDeg[index] ? `${rotateDeg[index]}deg` : "0deg") }} controls className=" w-full h-full object-contain rounded-lg" onEnded={pauseVideo} onPointerUp={toggleFocus} />
+      <video ref={videoRef} width={1000} height={1000} src={url} style={{ rotate: `${rotateDeg}deg` }} controls className=" w-full h-full object-contain rounded-lg" onEnded={pauseVideo} onPointerUp={toggleFocus} />
     </div>
   );
 }

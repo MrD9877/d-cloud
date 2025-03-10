@@ -2,37 +2,39 @@ import SelectDropDown from "@/components/SelectDropDown";
 import { AlignJustify, CheckCircle2, Trash2 } from "lucide-react";
 import { useSidebar } from "@/components/ui/sidebar";
 import DeletePromt from "./DeletePromt";
-import { ViewFilesBTNPropsType } from "@/app/files/[type]/page";
+import { setViewSelect } from "@/utility/reduxFn";
+import { useSelector } from "react-redux";
+import { StoreState } from "@/redux/Silce";
+import DownloadButton from "./DownLoadBtn";
 
 export type ViewStateType = {
   view: number;
   setView: React.Dispatch<React.SetStateAction<number>>;
 };
 
-type TopFilesNavType = {
-  loadImage?: boolean;
-  setViewSelect: React.Dispatch<React.SetStateAction<boolean>>;
-  viewSelectBox: boolean;
-  ViewFilesBTNProps?: ViewFilesBTNPropsType;
-};
+function ViewFilesBTN() {
+  const { viewSelectBox, selected, fileType } = useSelector((state: StoreState) => state);
 
-function ViewFilesBTN({ ViewFilesBTNProps, viewSelectBox }: { viewSelectBox: boolean; ViewFilesBTNProps: ViewFilesBTNPropsType | undefined }) {
-  if (!ViewFilesBTNProps) return <></>;
-  const { view, setView, selected, setSelected } = ViewFilesBTNProps;
   return (
     <div>
       {viewSelectBox ? (
-        <DeletePromt urls={selected}>
-          <Trash2 stroke="red" />
-        </DeletePromt>
+        <div className="flex justify-between gap-8 items-center">
+          <DownloadButton urls={selected} fileType={fileType} />
+
+          <DeletePromt urls={selected}>
+            <Trash2 stroke="red" />
+          </DeletePromt>
+        </div>
       ) : (
-        <>{view && setView && <SelectDropDown setView={setView} view={view} />}</>
+        <>{<SelectDropDown />}</>
       )}
     </div>
   );
 }
 
-function UploadFilesBTN({ viewSelectBox }: { viewSelectBox: boolean }) {
+function UploadFilesBTN() {
+  const { viewSelectBox } = useSelector((state: StoreState) => state);
+
   return (
     <>
       {viewSelectBox && (
@@ -44,8 +46,9 @@ function UploadFilesBTN({ viewSelectBox }: { viewSelectBox: boolean }) {
   );
 }
 
-export function TopFilesNav({ ViewFilesBTNProps, loadImage = false, viewSelectBox, setViewSelect }: TopFilesNavType & Partial<ViewStateType>) {
+export function TopFilesNav() {
   const { toggleSidebar } = useSidebar();
+  const { viewSelectBox, download } = useSelector((state: StoreState) => state);
 
   return (
     <div className="w-screen h-12 mb-4">
@@ -53,8 +56,8 @@ export function TopFilesNav({ ViewFilesBTNProps, loadImage = false, viewSelectBo
         <button onClick={() => toggleSidebar()}>
           <AlignJustify className="h-[30px] w-[30px]" />
         </button>
-        {loadImage ? <ViewFilesBTN viewSelectBox={viewSelectBox} ViewFilesBTNProps={ViewFilesBTNProps} /> : <UploadFilesBTN viewSelectBox={viewSelectBox} />}
-        <CheckCircle2 fill={viewSelectBox ? "brown" : "none"} stroke={viewSelectBox ? "white" : "black"} onClick={() => setViewSelect((pre: boolean) => !pre)} />
+        {download ? <ViewFilesBTN /> : <UploadFilesBTN />}
+        <CheckCircle2 fill={viewSelectBox ? "brown" : "none"} stroke={viewSelectBox ? "white" : "black"} onClick={() => setViewSelect(!viewSelectBox)} />
       </div>
     </div>
   );

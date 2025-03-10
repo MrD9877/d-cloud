@@ -6,7 +6,6 @@ import { authUser } from "../utility/authUser";
 import { cookies } from "next/headers";
 import { User } from "@/schema/user";
 import { uploadVideoMultipart } from "../utility/awsVideo";
-
 export async function POST(request: Request) {
   await dbConnect();
   const cookieStore = await cookies();
