@@ -1,7 +1,8 @@
 import dotenv from "dotenv";
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-type UploadImage = (data: Buffer<ArrayBufferLike>, imageId: string, ContentType: string) => Promise<void>;
+type UploadImage = (imageId: string) => Promise<string>;
 
 dotenv.config();
 
@@ -18,16 +19,14 @@ const s3 = new S3Client({
   region: bucketRegion,
 });
 
-export const uploadImage: UploadImage = async (data, imageId, ContentType) => {
+export const uploadImage: UploadImage = async (fileId) => {
   const params = {
     Bucket: bucketName,
-    Key: imageId,
-    Body: data,
-    ContentType: ContentType,
+    Key: fileId,
   };
-  const commad = new PutObjectCommand(params);
-  await s3.send(commad);
-  console.log("image on s3");
+  const command = new PutObjectCommand(params);
+  const presignedUrl = await getSignedUrl(s3, command, { expiresIn: 60 * 60 });
+  return presignedUrl;
 };
 
 export const testJest = () => {

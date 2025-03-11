@@ -1,43 +1,39 @@
-import { NextResponse } from "next/server";
 import { uploadImage } from "../utility/awsBucket";
 import { generateRandom } from "../utility/random";
 import dbConnect from "../utility/connectMongo";
 import { authUser } from "../utility/authUser";
 import { cookies } from "next/headers";
 import { User } from "@/schema/user";
-import { uploadVideoMultipart } from "../utility/awsVideo";
-export async function POST(request: Request) {
+
+export type signUrlsType = {
+  url: string;
+  fileId: string;
+};
+
+export async function GET(request: Request) {
   await dbConnect();
   const cookieStore = await cookies();
-  console.log("upload");
+  const { searchParams } = new URL(request.url);
   try {
     const userData = await authUser(cookieStore);
     if (!userData || typeof userData === "string" || !userData.email) return new Response(JSON.stringify({ msg: "unAuth" }), { status: 401 });
+    const type = searchParams.get("type");
+    if (type !== "image" && type !== "video") return new Response(JSON.stringify({ msg: "No such type Allowed" }), { status: 400 });
     const email = userData.email;
-    const formData = await request.formData();
-    const files = formData.getAll("files");
-    const type = formData.get("type");
-    if (!files || files.length === 0) return NextResponse.json({ message: "No files uploaded" }, { status: 400 });
-
-    if (type !== "image" && type !== "video") return NextResponse.json({ message: "No such Type" }, { status: 400 });
-    const filesUploadedOnaws = [];
-    // Process each file
-    for (const file of files) {
-      if (file instanceof File) {
-        const fileId = generateRandom(32);
-        const buffer = Buffer.from(await file.arrayBuffer());
-        const upload = type === "image" ? await uploadImage(buffer, fileId, "png") : await uploadVideoMultipart(file, fileId);
-        void upload;
-        filesUploadedOnaws.push({ fileId });
-      } else {
-        throw Error("file is Not Instance of a File");
-      }
+    const files = searchParams.get("files");
+    const filesUploadedOnaws: { fileId: string }[] = [];
+    const urls: signUrlsType[] = [];
+    for (let i = 0; i < Number(files); i++) {
+      const fileId = generateRandom(32);
+      const signedURL = await uploadImage(fileId);
+      filesUploadedOnaws.push({ fileId });
+      urls.push({ fileId, url: signedURL });
     }
     const user = await User.updateOne({ email }, { $push: { [type]: { $each: filesUploadedOnaws } } });
     if (!user.acknowledged) throw Error("error");
-    return NextResponse.json({ message: "Files uploaded successfully" }, { status: 200 });
+    return new Response(JSON.stringify({ urls }), { status: 200 });
   } catch (error) {
     console.error("Error uploading files:", error);
-    return NextResponse.json({ message: "Failed to upload files" }, { status: 500 });
+    return new Response(JSON.stringify({ msg: "Internal server Error" }), { status: 500 });
   }
 }
