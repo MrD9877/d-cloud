@@ -3,9 +3,9 @@ import GoogleProvider from "next-auth/providers/google";
 import { cookies } from "next/headers";
 import { tokenGenerator } from "../../utility/tokenGenerators";
 import { User } from "@/schema/user";
-export const config = {
-  maxDuration: 30,
-};
+import dbConnect from "../../utility/connectMongo";
+
+export const maxDuration = 30;
 
 const handler = NextAuth({
   providers: [
@@ -25,6 +25,7 @@ const handler = NextAuth({
       const email = user.email?.trim().toLowerCase();
       const userName = user.name?.trim().toLowerCase();
       try {
+        await dbConnect();
         const checkUser = await User.findOne({ email });
         if (!checkUser) {
           const newUser = new User({ email, userName });
