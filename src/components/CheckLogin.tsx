@@ -15,8 +15,9 @@ export default function CheckLogin() {
 
   useEffect(() => {
     const token = getCookie("refreshToken");
+    console.log("trig");
     const dialogState = triggerRef.current && triggerRef.current.dataset["state"];
-    if ((!token && pathname !== "/login" && pathname !== "/register" && dialogState === "closed") || (pathname !== "/login" && pathname !== "/register" && dialogState === "open")) {
+    if ((!token && pathname !== "/login" && pathname !== "/register" && dialogState === "closed") || ((pathname === "/login" || pathname === "/register") && dialogState === "open")) {
       triggerRef.current?.click();
     }
   }, [pathname]);
