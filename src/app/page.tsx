@@ -37,7 +37,7 @@ export default function Home() {
   const router = useRouter();
   const token = useToken();
   return (
-    <div className="w-screen h-screen p-4 flex flex-col gap-4">
+    <div className="w-screen h-screen p-4 flex flex-col gap-4 md:w-full">
       {items.map((item) => {
         return (
           <Card key={item.title} onClick={() => router.push(item.url)}>

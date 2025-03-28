@@ -39,7 +39,6 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 }
-
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -147,7 +146,8 @@ img::selection {
   padding-right: 2px;
 }
 .weinput {
-  width: 80vw;
+  min-width: 300px;
+  max-width: 800px;
   border: 0px solid white;
   height: 30px;
   padding-left: 9px;

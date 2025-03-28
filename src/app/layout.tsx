@@ -24,14 +24,14 @@ export default function RootLayout({
         <SessionProvider>
           <StoreProvider>
             <QueryProvider>
-              <SidebarProvider>
-                <main>
+              <main className="w-screen">
+                <SidebarProvider>
                   <AppSidebar />
                   {children}
                   <CheckLogin />
                   <Toaster />
-                </main>
-              </SidebarProvider>
+                </SidebarProvider>
+              </main>
             </QueryProvider>
           </StoreProvider>
         </SessionProvider>
