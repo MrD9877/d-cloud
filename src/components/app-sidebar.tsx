@@ -8,6 +8,8 @@ import Image from "next/image";
 import useToken from "@/hooks/useToken";
 import { signOutFn } from "@/utility/signOut";
 
+const openIn = ["files", "uploadFiles"];
+
 const items = [
   {
     title: "Home",
@@ -30,24 +32,20 @@ const items = [
     url: "/login",
     icon: LogIn,
   },
-  // {
-  //   title: "Profile",
-  //   url: "/profile",
-  //   icon: UserRound,
-  // },
 ];
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const { toggleSidebar } = useSidebar();
+  const { toggleSidebar, isMobile } = useSidebar();
   const token = useToken();
+  if (!openIn.includes(pathname.split("/")[1])) return <></>;
   return (
     <>
       <Sidebar>
         <SidebarContent>
           <SidebarGroup className="justify-between flex-row items-center pb-0 pr-4 pt-3">
             {/* app icon  */}
-            <Link href={"/"} onClick={() => toggleSidebar()}>
+            <Link href={"/"} onClick={() => isMobile && toggleSidebar()}>
               <Image width={40} height={40} src={"/images/icon.ico"} alt="icon" />
             </Link>
             {/* dark light mode  */}
@@ -60,7 +58,7 @@ export function AppSidebar() {
                   if (token && item.title === "Login") return;
                   return (
                     <SidebarMenuItem key={item.title}>
-                      <Link href={item.url} onClick={() => toggleSidebar()}>
+                      <Link href={item.url} onClick={() => isMobile && toggleSidebar()}>
                         <SidebarMenuButton asChild isActive={pathname === item.url} className="text-xl">
                           <div>
                             <item.icon className="h-[19px] w-[19px]" />

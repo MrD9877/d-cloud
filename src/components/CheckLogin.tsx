@@ -7,6 +7,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { LogIn, UserPen } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
+const openIn = ["uploadFiles", "files", ""];
+
 export default function CheckLogin() {
   const triggerRef = useRef<HTMLButtonElement>(null);
 
@@ -17,11 +19,11 @@ export default function CheckLogin() {
     const token = getCookie("refreshToken");
     console.log("trig");
     const dialogState = triggerRef.current && triggerRef.current.dataset["state"];
-    if ((!token && pathname !== "/login" && pathname !== "/register" && dialogState === "closed") || ((pathname === "/login" || pathname === "/register") && dialogState === "open")) {
+    if (!token && dialogState === "closed") {
       triggerRef.current?.click();
     }
   }, [pathname]);
-
+  if (!openIn.includes(pathname.split("/")[1])) return <></>;
   return (
     <>
       {/* if production no annoying login popup */}

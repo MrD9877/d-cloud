@@ -29,8 +29,8 @@ export default function UpLoadFilesPage() {
   };
   return (
     <>
-      <TriggerNav />
-      <div className="w-screen h-screen p-4 flex flex-col gap-4">
+      <div className="w-screen h-screen p-4 flex flex-col gap-4 md:w-full">
+        <TriggerNav />
         {items.map((item) => {
           return (
             <Card key={item.title}>

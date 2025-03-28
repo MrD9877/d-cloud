@@ -7,7 +7,7 @@ export default function TriggerNav() {
   const { toggleSidebar } = useSidebar();
 
   return (
-    <div className="w-screen p-4">
+    <div className="w-screen p-4 md:hidden">
       <button onClick={() => toggleSidebar()}>
         <AlignJustify className="h-[30px] w-[30px]" />
       </button>

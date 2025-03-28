@@ -29,7 +29,7 @@ export default function FileTypePage() {
   if (fileQuery.error) return <>{fileQuery.error.message}</>;
   return (
     <div>
-      {loading && <LoadingSpinner className="w-screen h-full absolute z-[100] bg-white/50 text-black" />}
+      {loading && <LoadingSpinner className="w-screen h-full absolute z-[100] bg-white/50 text-black md:w-full" />}
       <TopFilesNav />
       {/* {fileQuery.isLoading && <LoadingSpinner className="w-screen h-screen absolute z-50 bg-white/25" />} */}
       {fileQuery.data && fileUrls && <Gallery />}
