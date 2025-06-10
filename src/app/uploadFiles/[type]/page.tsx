@@ -20,7 +20,7 @@ export default function UploadType() {
 
   if (fileType !== "video" && fileType !== "image") return <>wrong</>;
   return (
-    <>
+    <div className="relative">
       <TopFilesNav />
       <div className="md:w-full">
         {loading && <LoadingSpinner className="w-screen h-full absolute z-50 bg-white/25 md:w-full" />}
@@ -51,6 +51,6 @@ export default function UploadType() {
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 }

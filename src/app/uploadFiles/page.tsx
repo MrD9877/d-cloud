@@ -33,8 +33,8 @@ export default function UpLoadFilesPage() {
         <TriggerNav />
         {items.map((item) => {
           return (
-            <Card key={item.title}>
-              <CardContent onClick={() => openTab(item.url)}>
+            <Card key={item.title} onClick={() => openTab(item.url)}>
+              <CardContent>
                 <div className="flex justify-between">
                   <div className="flex gap-2">
                     <p>{item.title}</p>
