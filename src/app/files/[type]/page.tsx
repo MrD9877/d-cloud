@@ -26,9 +26,14 @@ export default function FileTypePage() {
     setDownLoad(true);
   }, []);
   if (fileType !== "video" && fileType !== "image") return <>wrong</>;
-  if (fileQuery.error) return <>{fileQuery.error.message}</>;
+  if (fileQuery.error)
+    return (
+      <div className="w-full h-full flex justify-center items-center text-4xl text-bold">
+        <span>Error:{fileQuery.error.message}</span>
+      </div>
+    );
   return (
-    <div>
+    <div className="relative w-full">
       {loading && <LoadingSpinner className="w-screen h-full absolute z-[100] bg-white/50 text-black md:w-full" />}
       <TopFilesNav />
       {/* {fileQuery.isLoading && <LoadingSpinner className="w-screen h-screen absolute z-50 bg-white/25" />} */}

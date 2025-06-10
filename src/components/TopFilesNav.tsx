@@ -51,8 +51,8 @@ export function TopFilesNav() {
   const { viewSelectBox, download } = useSelector((state: StoreState) => state);
 
   return (
-    <div className="w-screen h-12 mb-4 md:w-full md:flex md:justify-center">
-      <div className="w-full md:w-96 md:mx-auto px-4 h-12 flex  items-center justify-between fixed top-0 z-10 bg-white ">
+    <div className="w-full h-12 mb-4 md:flex justify-end relative">
+      <div className="w-full  px-4 h-12 flex  items-center justify-between fixed top-0 z-10 bg-white md:w-[28rem] lg:w-[42rem]">
         <button onClick={() => toggleSidebar()} className="md:invisible">
           <AlignJustify className="h-[30px] w-[30px]" />
         </button>
