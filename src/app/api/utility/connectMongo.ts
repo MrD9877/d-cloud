@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 import { Db } from "mongodb";
+import dotenv from "dotenv";
 
-export const runtime = "nodejs";
+dotenv.config();
 
 type Connection = { isConnected: number; db: Db | null };
 const connection: Connection = { isConnected: 0, db: null };
@@ -11,7 +12,7 @@ async function dbConnect() {
     return mongoose.connection;
   }
   try {
-    const db = await mongoose.connect("mongodb+srv://dhuruvbansl99:Shubham123@cluster0.jos6q.mongodb.net/d-cloud");
+    const db = await mongoose.connect(process.env.MONGO_DB_STRING!);
     connection.isConnected = db.connections[0].readyState;
     return db;
   } catch (e) {

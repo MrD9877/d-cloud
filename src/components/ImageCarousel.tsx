@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
-import { Copy, RotateCw, Trash2 } from "lucide-react";
+import { Copy, Expand, RotateCw, Trash2 } from "lucide-react";
 import Image from "next/image";
 import DownloadButton from "./DownLoadBtn";
 import VideoPlayerCarousel from "./VideoPlayer";
@@ -9,6 +9,7 @@ import DeletePromt from "./DeletePromt";
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
 import { StoreState } from "@/redux/Silce";
+import ExpandedImage from "./ExpandedImage";
 
 type ImageCarouselType = {
   children: React.ReactElement;
@@ -17,7 +18,10 @@ type ImageCarouselType = {
 
 export default function ImageCarousel({ children, index }: ImageCarouselType) {
   const [rotateDeg, setRotate] = useState<number>(0);
-  const { fileType, fileUrls, download } = useSelector((state: StoreState) => state);
+  const fileType = useSelector((state: StoreState) => state.fileType);
+  const fileUrls = useSelector((state: StoreState) => state.fileUrls);
+  const download = useSelector((state: StoreState) => state.download);
+  const [expand, setExpand] = useState<string>();
 
   const rotateImg = () => {
     setRotate((pre) => pre + 90);
@@ -33,22 +37,29 @@ export default function ImageCarousel({ children, index }: ImageCarouselType) {
   };
   return (
     <>
+      {expand && <ExpandedImage url={expand} setExpand={setExpand} />}
       <Dialog>
         <DialogTrigger>{children}</DialogTrigger>
         <div className="hidden">
           <DialogTitle>Are you absolutely sure?</DialogTitle>
         </div>
-        <DialogContent className="flex justify-center items-center max-h-[70vh]">
+        <DialogContent className="flex justify-center items-center max-h-[95vh]">
           <Carousel opts={{ startIndex: index }} className="w-full mx-auto mt-4">
             <CarouselContent>
               {fileUrls.map((url, index) => {
                 const piptype = fileType === "image" ? "png" : "mp4";
                 return (
-                  <CarouselItem key={index || 0} className="max-h-[65vh]">
+                  <CarouselItem key={index || 0} className="max-h-[90vh]">
                     <div className="w-full h-[6%] flex justify-between items-center px-4 my-2">
-                      <button onClick={() => rotateImg()}>
-                        <RotateCw />
-                      </button>
+                      <div className="flex gap-4">
+                        <button onClick={() => setExpand(url)}>
+                          <Expand />
+                        </button>
+                        <button onClick={() => rotateImg()}>
+                          <RotateCw />
+                        </button>
+                      </div>
+
                       {download ? (
                         <div className="flex gap-4 items-center">
                           <DownloadButton imageUrl={url} fileName={`d-cloud-download-${fileType}-${index}.${piptype}`} />

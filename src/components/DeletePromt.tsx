@@ -13,7 +13,9 @@ export const convertUrlId = (url: string) => {
   return fileId;
 };
 export default function DeletePromt({ children, urls }: { children: React.ReactElement; urls: string[] }) {
-  const { fileType, fileUrls, download } = useSelector((state: StoreState) => state);
+  const fileType = useSelector((state: StoreState) => state.fileType);
+  const fileUrls = useSelector((state: StoreState) => state.fileUrls);
+  const download = useSelector((state: StoreState) => state.download);
   const queryClient = useQueryClient();
   const deleteFiles = async () => {
     const files: string[] = [];

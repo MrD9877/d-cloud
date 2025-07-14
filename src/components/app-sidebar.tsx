@@ -1,14 +1,14 @@
 "use client";
 import React from "react";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
-import { Download, Home, LogIn, LogOut, Upload } from "lucide-react";
+import { Boxes, Download, Home, LogIn, LogOut, Upload } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import useToken from "@/hooks/useToken";
 import { signOutFn } from "@/utility/signOut";
 
-const openIn = ["files", "uploadFiles"];
+const openIn = ["files", "uploadFiles", "bundlers"];
 
 const items = [
   {
@@ -31,6 +31,11 @@ const items = [
     title: "Login",
     url: "/login",
     icon: LogIn,
+  },
+  {
+    title: "Bundler",
+    url: "/bundlers",
+    icon: Boxes,
   },
 ];
 

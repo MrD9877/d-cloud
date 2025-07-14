@@ -2,7 +2,6 @@ import Image from "next/image";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import ImageCarousel from "./ImageCarousel";
 import { PlayIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { StoreState } from "@/redux/Silce";
 import { setSelected, setViewSelect } from "@/utility/reduxFn";
@@ -21,9 +20,12 @@ function VideoPlayer({ url }: { url: string }) {
 
 export default function Gallery() {
   const [checked, setChecked] = useState<{ [key: number]: boolean }>({});
-  const { fileType, fileUrls, viewSelectBox, view, page, selected } = useSelector((state: StoreState) => state);
-
-  const router = useRouter();
+  const fileType = useSelector((state: StoreState) => state.fileType);
+  const fileUrls = useSelector((state: StoreState) => state.fileUrls);
+  const viewSelectBox = useSelector((state: StoreState) => state.viewSelectBox);
+  const view = useSelector((state: StoreState) => state.view);
+  const page = useSelector((state: StoreState) => state.page);
+  const selected = useSelector((state: StoreState) => state.selected);
 
   const handeleCheck = (index: number, url: string) => {
     if (checked[index]) {
@@ -39,25 +41,27 @@ export default function Gallery() {
     (e: PopStateEvent) => {
       if (viewSelectBox) {
         e.preventDefault();
-        window.history.pushState(null, "", window.location.pathname);
-        router.replace("/files/image");
+        const { pathname, search, hash } = window.location;
+        window.history.pushState(null, "", pathname + search + hash);
         setViewSelect(false);
       }
     },
-    [router, viewSelectBox]
+    [viewSelectBox]
   );
+
   useEffect(() => {
-    if (!viewSelectBox) setChecked({});
-  }, [viewSelectBox]);
-  useEffect(() => {
-    window.history.pushState(null, "", window.location.pathname);
+    const { pathname, search, hash } = window.location;
+    window.history.pushState(null, "", pathname + search + hash);
     window.addEventListener("popstate", handlePopState);
 
     return () => {
       window.removeEventListener("popstate", handlePopState);
     };
-  }, [router, handlePopState]);
+  }, [handlePopState]);
 
+  useEffect(() => {
+    if (!viewSelectBox) setChecked({});
+  }, [viewSelectBox]);
   return (
     <>
       <div className="flex flex-wrap px-4 my-2 gap-2 justify-center items-center">

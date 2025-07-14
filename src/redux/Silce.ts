@@ -15,6 +15,7 @@ export type StoreState = {
   loading: boolean;
   download: boolean;
   filesUploadSelected: FilesUploadSelectedType[];
+  error: string | null;
 };
 
 const initialState: StoreState = {
@@ -27,6 +28,7 @@ const initialState: StoreState = {
   loading: false,
   download: false,
   filesUploadSelected: [],
+  error: null,
 };
 
 const userSlice = createSlice({
@@ -38,6 +40,9 @@ const userSlice = createSlice({
     },
     setFileType: (state, action: { payload: "video" | "image"; type: string }) => {
       state.fileType = action.payload;
+    },
+    setError: (state, action: { payload: string }) => {
+      state.error = action.payload;
     },
     setViewSelectBox: (state, action: { payload: boolean; type: string }) => {
       if (action.payload === false) {
@@ -65,8 +70,6 @@ const userSlice = createSlice({
       state.selected = [];
       state.viewSelectBox = false;
       state.filesUploadSelected = state.filesUploadSelected.filter((obj) => {
-        console.log(obj.url);
-        console.log(action.payload.includes(obj.url));
         return !action.payload.includes(obj.url);
       });
     },
@@ -76,7 +79,7 @@ const userSlice = createSlice({
   },
 });
 
-export const { setFilesUrls, setFileType, setViewSelectBox, setViewState, setPageState, setSelectedState, setLoadingState, setDownLoadState, deleteFilesRedux, setFilesUploadSelectedState } = userSlice.actions;
+export const { setFilesUrls, setFileType, setViewSelectBox, setViewState, setPageState, setSelectedState, setLoadingState, setDownLoadState, deleteFilesRedux, setFilesUploadSelectedState, setError } = userSlice.actions;
 
 export const store = configureStore({
   reducer: userSlice.reducer,

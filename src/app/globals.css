@@ -169,6 +169,42 @@ img::selection {
   width: 60px;
 }
 
+/* Scrollbar track */
+.style-1::-webkit-scrollbar-track {
+  border-radius: 1px;
+  background-color: "white";
+}
+
+/* Scrollbar itself (horizontal too) */
+.style-1::-webkit-scrollbar {
+  height: 6px; /* 👈 important for horizontal */
+  background-color: "white";
+}
+
+/* Scrollbar thumb */
+.style-1::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #f5f5f5;
+}
+
+.style-2::-webkit-scrollbar-track {
+  border-radius: 1px;
+  background-color: "white";
+}
+
+/* Scrollbar itself (horizontal too) */
+.style-2::-webkit-scrollbar {
+  height: 6px; /* 👈 important for horizontal */
+  width: 2px;
+  background-color: "white";
+}
+
+/* Scrollbar thumb */
+.style-2::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #f5f5f5;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

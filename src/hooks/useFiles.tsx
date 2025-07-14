@@ -24,6 +24,7 @@ export default function useFiles() {
   const type = pathname.split("/");
   const fileType = type[type.length - 1];
   const [files, setFile] = useState<FileList>();
+
   const { loading, filesUploadSelected } = useSelector((state: StoreState) => ({ loading: state.loading, filesUploadSelected: state.filesUploadSelected }));
   useEffect(() => {
     if (filesUploadSelected.length === 0) {
@@ -48,6 +49,7 @@ export default function useFiles() {
     }
     if (temp) setFilesUrlsFn(urls);
   };
+
   useEffect(() => {
     if (fileType === "image" || fileType === "video") store.dispatch(setFileType(fileType));
   }, [fileType]);

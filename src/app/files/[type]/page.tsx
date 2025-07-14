@@ -9,6 +9,8 @@ import { TopFilesNav } from "@/components/TopFilesNav";
 import { setDownLoad, setPage } from "@/utility/reduxFn";
 import { useSelector } from "react-redux";
 import { StoreState } from "@/redux/Silce";
+import NotFoundComponent from "@/components/NotFoundComponent";
+import ErrorPage from "@/components/ui/ErrorPage";
 
 export default function FileTypePage() {
   const { fileQuery } = useViewFiles();
@@ -25,13 +27,10 @@ export default function FileTypePage() {
   useEffect(() => {
     setDownLoad(true);
   }, []);
-  if (fileType !== "video" && fileType !== "image") return <>wrong</>;
-  if (fileQuery.error)
-    return (
-      <div className="w-full h-full flex justify-center items-center text-4xl text-bold">
-        <span>Error:{fileQuery.error.message}</span>
-      </div>
-    );
+
+  if (fileType !== "video" && fileType !== "image") return <NotFoundComponent />;
+  if (fileQuery.error) return <ErrorPage error={fileQuery.error.message} />;
+
   return (
     <div className="relative w-full">
       {loading && <LoadingSpinner className="w-screen h-full absolute z-[100] bg-white/50 text-black md:w-full" />}

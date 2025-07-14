@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { getCookie } from "@/utility/getCookies";
 import { usePathname } from "next/navigation";
+import { checkToken } from "@/app/actions/checkToken";
 
 export default function useToken() {
   const { data: session } = useSession();
   const pathname = usePathname();
 
-  const [token, setToken] = useState<string | null>(null);
+  const [token, setToken] = useState<boolean>(true);
+
   useEffect(() => {
-    const token = getCookie("refreshToken");
-    setToken(token);
+    (async () => {
+      const isSignedIn = await checkToken();
+      setToken(isSignedIn);
+    })();
   }, [session, pathname]);
 
   return token;

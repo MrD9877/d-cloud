@@ -7,7 +7,7 @@ import { signIn } from "next-auth/react";
 import SignOut from "@/components/SignOut";
 
 interface LoginCard {
-  token: string | null;
+  token: boolean;
   submitAction: (payload: FormData) => void;
   isPending: boolean;
   headerDescription: string;

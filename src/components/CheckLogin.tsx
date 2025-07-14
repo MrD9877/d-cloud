@@ -1,11 +1,11 @@
 "use client";
-import { getCookie } from "@/utility/getCookies";
 import React, { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 import { LogIn, UserPen } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
+import { checkToken } from "@/app/actions/checkToken";
 
 const openIn = ["uploadFiles", "files", ""];
 
@@ -16,12 +16,15 @@ export default function CheckLogin() {
   const router = useRouter();
 
   useEffect(() => {
-    const token = getCookie("refreshToken");
-    console.log("trig");
-    const dialogState = triggerRef.current && triggerRef.current.dataset["state"];
-    if (!token && dialogState === "closed") {
-      triggerRef.current?.click();
-    }
+    const checkAuth = async () => {
+      const isSignedIn = await checkToken();
+      console.log(isSignedIn);
+      const dialogState = triggerRef.current && triggerRef.current.dataset["state"];
+      if (!isSignedIn && dialogState === "closed") {
+        triggerRef.current?.click();
+      }
+    };
+    checkAuth();
   }, [pathname]);
   if (!openIn.includes(pathname.split("/")[1])) return <></>;
   return (

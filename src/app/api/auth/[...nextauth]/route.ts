@@ -39,7 +39,7 @@ const handler = NextAuth({
       const refreshToken = await tokenGenerator({ email: user.email, userName: user.name }, "50d");
       if (!accessToken || !refreshToken) return false;
       cookieStore.set("accessToken", accessToken);
-      cookieStore.set("refreshToken", refreshToken);
+      cookieStore.set("refreshToken", refreshToken, { httpOnly: true, sameSite: "strict" });
       return true; // Continue with sign-in
     },
   },
