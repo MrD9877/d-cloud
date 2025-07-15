@@ -2,7 +2,7 @@
 import { useActionState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import ErrorPage from "@/components/ErrorPage";
+import ErrorPage from "@/components/ui/ErrorPage";
 
 import useToken from "@/hooks/useToken";
 import LoginFormCard from "@/components/LoginFormCard";
@@ -36,6 +36,6 @@ export default function RegisterPage() {
     return null;
   }, null);
 
-  if (error) return <ErrorPage message={error} />;
+  if (error) return <ErrorPage error={error} />;
   return <LoginFormCard headerTopic="register" token={token} submitAction={submitAction} isPending={isPending} headerDescription="Please Register to Continue." linkDescription="Already have an account" linkHref={"login"} collectInputs={["username", "email", "password"]} />;
 }

@@ -18,7 +18,7 @@ export default function UploadPage() {
 
   useEffect(() => {
     dispatch(setFilesUrls([]));
-  }, []);
+  }, [dispatch]);
   return (
     <div className="w-screen">
       <div className="flex items-center justify-center w-full px-4 my-4 md:w-1/2 md:mx-auto">

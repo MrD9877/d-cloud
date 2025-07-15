@@ -1,4 +1,4 @@
-"use clinet";
+"use client";
 import { setFilesUrls, setFileType, store } from "@/redux/Silce";
 import { fetchFiles } from "@/utility/fetchFiles";
 import { useQuery } from "@tanstack/react-query";

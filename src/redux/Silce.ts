@@ -1,3 +1,4 @@
+"use client";
 import { createSlice, configureStore } from "@reduxjs/toolkit";
 
 export type FilesUploadSelectedType = {
@@ -41,7 +42,7 @@ const userSlice = createSlice({
     setFileType: (state, action: { payload: "video" | "image"; type: string }) => {
       state.fileType = action.payload;
     },
-    setError: (state, action: { payload: string }) => {
+    setError: (state, action: { payload: string | null }) => {
       state.error = action.payload;
     },
     setViewSelectBox: (state, action: { payload: boolean; type: string }) => {
