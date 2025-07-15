@@ -5,7 +5,7 @@ import React from "react";
 export default function ErrorPage({ error }: { error?: string }) {
   const router = useRouter();
   return (
-    <div className="flex flex-col items-center justify-center w-screen h-screen gap-12 py-8 ">
+    <div className="flex flex-col items-center justify-center w-screen h-screen gap-12 py-8 bg-white">
       <svg className="h-[50vh] aspect-video" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
         <g id="freepik--background-simple--inject-3">
           <path d="M55.48,273.73s2.32,72,62.43,120,143.41,51.43,210.84,56,119.23-33.62,127-91.32-43.72-74.64-71.68-140.33S358.64,130.8,299.49,90.4,147.8,74.81,99.29,144,55.48,273.73,55.48,273.73Z" style={{ fill: "#3B82F6" }}></path>
@@ -108,7 +108,6 @@ export default function ErrorPage({ error }: { error?: string }) {
         </g>
       </svg>
       <div className="flex flex-col items-center gap-4">
-        <h1 className="text-3xl font-medium text-center">You are not authorized</h1>
         <p className="text-xl text-center text-red-600">{error ? `Error: ${error}` : "You tried to access a page you did not have prior authorization for."}</p>
         <button onClick={() => router.push("/")} className="px-4 py-2 text-sm font-medium leading-5 shadow text-white transition-colors duration-150 border border-transparent rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-300 bg-blue-600 hover:bg-blue-700 active:bg-blue-600">
           Back to Homepage

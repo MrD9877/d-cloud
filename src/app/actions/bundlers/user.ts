@@ -65,13 +65,17 @@ export async function addBundler(name: string, videoPermission: boolean, imagePe
 }
 
 export async function getBundlerUser(bundlerId: string) {
-  await dbConnect();
-  const userData = await authBundlerUser();
-  const bundler = await Bundler.findOne({ bundlerId, email: userData.email }).lean().select({
-    "image._id": 0, // Exclude _id from items in the 'image' array
-    "video._id": 0,
-    _id: 0,
-  });
-  if (!bundler) throw Error("Bundler id do not match with credentials!!");
-  return bundler;
+  try {
+    await dbConnect();
+    const userData = await authBundlerUser();
+    const bundler = await Bundler.findOne({ bundlerId, email: userData.email }).lean().select({
+      "image._id": 0, // Exclude _id from items in the 'image' array
+      "video._id": 0,
+      _id: 0,
+    });
+    if (!bundler) throw Error("Bundler id do not match with credentials!!");
+    return bundler;
+  } catch (err) {
+    return err;
+  }
 }

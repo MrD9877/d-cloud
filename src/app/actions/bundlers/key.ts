@@ -52,7 +52,7 @@ export async function getReadWriteAccess(key: string) {
     if (!info.readWritePermissions) throw Error("Invalid session request a new access key");
     return {
       success: true,
-      error: false,
+      error: null,
       body: info.readWritePermissions,
     };
   } catch (err) {
@@ -78,12 +78,16 @@ export async function getBundlerKey(key: string) {
 }
 
 export async function getBundlerKeyMediaAccess(key: string) {
-  await dbConnect();
-  const session = await authKey(key);
-  const bundler = await Bundler.findOne({ bundlerId: session.bundlerId }).lean().select({
-    mediaPermissions: 1,
-    _id: 0,
-  });
-  if (!bundler) throw Error("Bundler id do not match with credentials!!");
-  return bundler;
+  try {
+    await dbConnect();
+    const session = await authKey(key);
+    const bundler = await Bundler.findOne({ bundlerId: session.bundlerId }).lean().select({
+      mediaPermissions: 1,
+      _id: 0,
+    });
+    if (!bundler) throw Error("Bundler id do not match with credentials!!");
+    return bundler;
+  } catch (err) {
+    return err;
+  }
 }

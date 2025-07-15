@@ -22,7 +22,6 @@ export default function BundlerPage() {
 
   useEffect(() => {
     async function getMedia(fileType: "image" | "video", bundlerId: string | null, key: string | null) {
-      console.log(fileType, bundlerId, key);
       const media = await getBundlerMedia({ bundlerId, key, media: fileType });
       if (media.error && typeof media.error === "string") {
         dispatch(setError(media.error));

@@ -10,14 +10,15 @@ type BundlerMedia = "image" | "video";
 export async function getBundlerMedia({ key, bundlerId, media }: { key: string | null; bundlerId: string | null; media: BundlerMedia }) {
   try {
     let mediaArr: BundlerType["video"] | undefined;
+    let bundler: BundlerType | undefined | Error | unknown;
     if (key) {
-      const bundler = await getBundlerKey(key);
-      mediaArr = bundler[media];
+      bundler = await getBundlerKey(key);
     }
     if (bundlerId) {
-      const bundler = await getBundlerUser(bundlerId);
-      mediaArr = bundler[media];
+      bundler = await getBundlerUser(bundlerId);
     }
+    if (bundler instanceof Error) throw Error(bundler.message);
+    if (bundler instanceof Bundler) mediaArr = bundler[media];
     if (mediaArr) {
       return {
         success: true,
@@ -67,14 +68,16 @@ async function saveMediaInBundler(bundler: IBundler, media: BundlerMedia) {
 export async function getBundlerUploadURL({ key, bundlerId, media }: { key: string | null; bundlerId: string | null; media: "image" | "video" }) {
   try {
     let url: string | undefined;
+    let bundler: BundlerType | undefined | Error | unknown;
     if (key) {
-      const bundler = await getBundlerKey(key);
-      url = await saveMediaInBundler(bundler, media);
+      bundler = await getBundlerKey(key);
     }
     if (bundlerId) {
-      const bundler = await getBundlerUser(bundlerId);
-      url = await saveMediaInBundler(bundler, media);
+      bundler = await getBundlerUser(bundlerId);
     }
+    if (bundler instanceof Error) throw Error(bundler.message);
+    if (bundler instanceof Bundler) url = await saveMediaInBundler(bundler, media);
+
     if (url) {
       return {
         success: true,
@@ -94,17 +97,17 @@ export async function getBundlerUploadURL({ key, bundlerId, media }: { key: stri
 }
 
 export async function getMediaAccess({ key, bundlerId }: { key: string | null; bundlerId: string | null }) {
-  console.log("here");
   try {
     let access: BundlerType["mediaPermissions"] | undefined;
+    let bundler: BundlerType | undefined | Error | unknown;
     if (key) {
-      const bundler = await getBundlerKeyMediaAccess(key);
-      access = bundler["mediaPermissions"];
+      bundler = await getBundlerKeyMediaAccess(key);
     }
     if (bundlerId) {
-      const bundler = await getBundlerUser(bundlerId);
-      access = bundler["mediaPermissions"];
+      bundler = await getBundlerUser(bundlerId);
     }
+    if (bundler instanceof Error) throw Error(bundler.message);
+    if (bundler instanceof Bundler) access = bundler["mediaPermissions"];
     if (access) {
       return {
         success: true,

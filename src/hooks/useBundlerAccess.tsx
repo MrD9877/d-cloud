@@ -12,7 +12,6 @@ export default function useBundlerAccess(setPage: React.Dispatch<React.SetStateA
   useEffect(() => {
     async function setAccess(key: string) {
       const access = await getReadWriteAccess(key);
-      console.log(access);
       if (access.body) {
         setPermissions(access.body);
         if (!access.body.read || !access.body.write) {

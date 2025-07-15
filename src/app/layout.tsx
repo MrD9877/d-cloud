@@ -7,6 +7,7 @@ import CheckLogin from "@/components/CheckLogin";
 import QueryProvider from "@/components/providers/QueryProvider";
 import StoreProvider from "@/components/providers/StoreProvider";
 import { SessionProvider } from "@/components/providers/SessionProvider";
+import ErrorPageMain from "@/components/ErrorPage";
 
 export const metadata: Metadata = {
   title: "DCloud",
@@ -27,6 +28,7 @@ export default function RootLayout({
               <main className="w-screen">
                 <SidebarProvider>
                   <AppSidebar />
+                  <ErrorPageMain />
                   {children}
                   <CheckLogin />
                   <Toaster />

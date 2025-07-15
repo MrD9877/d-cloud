@@ -12,9 +12,8 @@ export default function useMediaAccess(key: string | null, bundlerId: string | n
   useEffect(() => {
     async function handler({ key, bundlerId }: { key: string | null; bundlerId: string | null }) {
       try {
-        console.log({ key, bundlerId });
         const mediaAccess = await getMediaAccess({ key, bundlerId });
-        console.log({ mediaAccess: mediaAccess.error });
+        console.log(mediaAccess);
         if (mediaAccess.body) {
           setMediaPermission(mediaAccess.body);
           if (!mediaAccess.body.image || !mediaAccess.body.video) {
@@ -26,14 +25,12 @@ export default function useMediaAccess(key: string | null, bundlerId: string | n
           dispatch(setError(mediaAccess.error));
         }
       } catch (err) {
-        console.log("Error");
         console.log(err);
         if (err instanceof Error) {
           dispatch(setError(err.message));
         }
       }
     }
-    console.log(key, bundlerId);
     if (key || bundlerId) {
       console.log("go");
       handler({ key, bundlerId });
