@@ -21,7 +21,6 @@ export default function AddNewBundler({ triggerRef, initData }: AddBundlerType) 
         toast("Error Operation unsuccessfull");
       }
       triggerRef.current?.click();
-      console.log(res);
     } catch (err) {
       console.log(err);
       toast("Error Operation unsuccessfull");

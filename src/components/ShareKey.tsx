@@ -23,6 +23,7 @@ export default function ShareKey({ triggerShareRef, bundlerId }: ShareKeyType) {
     if (!bundlerId) return null;
     try {
       const res = await createBundlerAuthKey({ bundlerId, expiresIn: Number(expiresIn), read: view === "on", write: upload === "on" });
+      console.log(res);
       if (res.error) {
         toast(res.error);
       } else {
@@ -47,7 +48,7 @@ export default function ShareKey({ triggerShareRef, bundlerId }: ShareKeyType) {
             <DialogTitle>Share Bundler Access</DialogTitle>
           </DialogHeader>
           <div className=" max-w-md bg-white rounded-lg shadow-md p-6  border-black border">
-            {keyData ? (
+            {keyData && keyData.key ? (
               <ShareURLComponent shareData={keyData} />
             ) : (
               <form className="flex flex-col" action={submitAction}>

@@ -17,7 +17,9 @@ export default function BundlerPage() {
     try {
       const data = (await getBundlers()) as BundlerType[];
       setBundlers(data);
-    } catch {}
+    } catch (err) {
+      console.log((err as Error).message);
+    }
   }
 
   useEffect(() => {

@@ -25,7 +25,6 @@ export default function RegisterPage() {
         const data = await res.json();
         toast(data.msg);
       } else if (res.status === 500) {
-        console.log("500");
         toast("Internal server Error");
       } else {
         toast(`Error ${res.statusText}`);

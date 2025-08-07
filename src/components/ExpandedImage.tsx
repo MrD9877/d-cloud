@@ -4,7 +4,7 @@ import React from "react";
 
 export default function ExpandedImage({ url, setExpand }: { url: string; setExpand: React.Dispatch<React.SetStateAction<string | undefined>> }) {
   return (
-    <div className="absolute top-0 left-0 z-[1000] bg-black w-screen h-screen flex justify-center items-center " onClick={(e) => console.log(e.target)}>
+    <div className="absolute top-0 left-0 z-[1000] bg-black w-screen h-screen flex justify-center items-center ">
       <nav className="text-white absolute top-0 w-full flex justify-end p-8 z-[1001]">
         <button
           onClick={() => {

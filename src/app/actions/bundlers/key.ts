@@ -37,7 +37,6 @@ export async function createBundlerAuthKey({ bundlerId, expiresIn, read, write }
       },
     };
   } catch (err) {
-    console.log(err);
     return {
       success: false,
       error: (err as Error).message,
@@ -88,6 +87,6 @@ export async function getBundlerKeyMediaAccess(key: string) {
     if (!bundler) throw Error("Bundler id do not match with credentials!!");
     return bundler;
   } catch (err) {
-    return err;
+    return err as Error;
   }
 }

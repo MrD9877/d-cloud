@@ -45,7 +45,6 @@ export async function addBundler(name: string, videoPermission: boolean, imagePe
     await dbConnect();
     const userData = await authBundlerUser();
     const n = crypto.randomBytes(8).toString("hex");
-    console.log(n);
     const newBundler = new Bundler({
       name,
       email: userData.email,
@@ -55,8 +54,7 @@ export async function addBundler(name: string, videoPermission: boolean, imagePe
         image: imagePermission,
       },
     });
-    const save = await newBundler.save();
-    console.log(save);
+    await newBundler.save();
     return true;
   } catch (err) {
     console.log(err);
@@ -76,6 +74,6 @@ export async function getBundlerUser(bundlerId: string) {
     if (!bundler) throw Error("Bundler id do not match with credentials!!");
     return bundler;
   } catch (err) {
-    return err;
+    return err as Error;
   }
 }

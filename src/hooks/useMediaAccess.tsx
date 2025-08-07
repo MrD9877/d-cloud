@@ -13,7 +13,6 @@ export default function useMediaAccess(key: string | null, bundlerId: string | n
     async function handler({ key, bundlerId }: { key: string | null; bundlerId: string | null }) {
       try {
         const mediaAccess = await getMediaAccess({ key, bundlerId });
-        console.log(mediaAccess);
         if (mediaAccess.body) {
           setMediaPermission(mediaAccess.body);
           if (!mediaAccess.body.image || !mediaAccess.body.video) {
@@ -32,7 +31,6 @@ export default function useMediaAccess(key: string | null, bundlerId: string | n
       }
     }
     if (key || bundlerId) {
-      console.log("go");
       handler({ key, bundlerId });
     }
   }, [key, bundlerId, dispatch]);

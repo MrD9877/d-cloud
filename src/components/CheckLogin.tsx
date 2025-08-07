@@ -18,7 +18,6 @@ export default function CheckLogin() {
   useEffect(() => {
     const checkAuth = async () => {
       const isSignedIn = await checkToken();
-      console.log(isSignedIn);
       const dialogState = triggerRef.current && triggerRef.current.dataset["state"];
       if (!isSignedIn && dialogState === "closed") {
         triggerRef.current?.click();

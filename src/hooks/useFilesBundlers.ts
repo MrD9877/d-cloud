@@ -39,7 +39,6 @@ export default function useFilesBundlers() {
         const data = uploadData[i];
         const url = await getBundlerUploadURL({ key, bundlerId, media: "image" });
         if (url.error) {
-          console.log(url.error);
           if (typeof url.error === "string") throw Error(url.error);
         }
         if (url.body) {
@@ -60,7 +59,6 @@ export default function useFilesBundlers() {
       setFilesUploadSelected([]);
       setFilesUrlsFn([]);
     } catch (error) {
-      console.log(error);
       toast("Failed to upload files", { description: `Error:${(error as Error).message}` });
     } finally {
       setLoading(false);

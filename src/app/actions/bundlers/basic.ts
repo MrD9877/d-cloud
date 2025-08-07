@@ -1,5 +1,5 @@
 "use server";
-import { Bundler, BundlerType, IBundler } from "@/schema/bundler";
+import { Bundler, BundlerType } from "@/schema/bundler";
 import { getBundlerKey, getBundlerKeyMediaAccess } from "./key";
 import { getBundlerUser } from "./user";
 import { generateRandomAsync } from "@/app/api/utility/random";
@@ -10,7 +10,7 @@ type BundlerMedia = "image" | "video";
 export async function getBundlerMedia({ key, bundlerId, media }: { key: string | null; bundlerId: string | null; media: BundlerMedia }) {
   try {
     let mediaArr: BundlerType["video"] | undefined;
-    let bundler: BundlerType | undefined | Error | unknown;
+    let bundler: BundlerType | undefined | Error;
     if (key) {
       bundler = await getBundlerKey(key);
     }
@@ -18,7 +18,7 @@ export async function getBundlerMedia({ key, bundlerId, media }: { key: string |
       bundler = await getBundlerUser(bundlerId);
     }
     if (bundler instanceof Error) throw Error(bundler.message);
-    if (bundler instanceof Bundler) mediaArr = bundler[media];
+    if (bundler) mediaArr = bundler[media];
     if (mediaArr) {
       return {
         success: true,
@@ -37,7 +37,7 @@ export async function getBundlerMedia({ key, bundlerId, media }: { key: string |
   }
 }
 
-async function saveMediaInBundler(bundler: IBundler, media: BundlerMedia) {
+async function saveMediaInBundler(bundler: BundlerType, media: BundlerMedia) {
   const mediaId = await generateRandomAsync(10);
   let contentType: "image/*" | "video/*";
   if (media === "image" && bundler.mediaPermissions.image) {
@@ -68,7 +68,7 @@ async function saveMediaInBundler(bundler: IBundler, media: BundlerMedia) {
 export async function getBundlerUploadURL({ key, bundlerId, media }: { key: string | null; bundlerId: string | null; media: "image" | "video" }) {
   try {
     let url: string | undefined;
-    let bundler: BundlerType | undefined | Error | unknown;
+    let bundler: BundlerType | undefined | Error;
     if (key) {
       bundler = await getBundlerKey(key);
     }
@@ -76,8 +76,7 @@ export async function getBundlerUploadURL({ key, bundlerId, media }: { key: stri
       bundler = await getBundlerUser(bundlerId);
     }
     if (bundler instanceof Error) throw Error(bundler.message);
-    if (bundler instanceof Bundler) url = await saveMediaInBundler(bundler, media);
-
+    if (bundler) url = await saveMediaInBundler(bundler, media);
     if (url) {
       return {
         success: true,
@@ -99,7 +98,7 @@ export async function getBundlerUploadURL({ key, bundlerId, media }: { key: stri
 export async function getMediaAccess({ key, bundlerId }: { key: string | null; bundlerId: string | null }) {
   try {
     let access: BundlerType["mediaPermissions"] | undefined;
-    let bundler: BundlerType | undefined | Error | unknown;
+    let bundler: BundlerType | undefined | Error;
     if (key) {
       bundler = await getBundlerKeyMediaAccess(key);
     }
@@ -107,7 +106,7 @@ export async function getMediaAccess({ key, bundlerId }: { key: string | null; b
       bundler = await getBundlerUser(bundlerId);
     }
     if (bundler instanceof Error) throw Error(bundler.message);
-    if (bundler instanceof Bundler) access = bundler["mediaPermissions"];
+    if (bundler) access = bundler["mediaPermissions"];
     if (access) {
       return {
         success: true,
@@ -118,7 +117,6 @@ export async function getMediaAccess({ key, bundlerId }: { key: string | null; b
       throw Error("Server Error try again!");
     }
   } catch (err) {
-    console.log(err);
     return {
       success: false,
       error: (err as Error).message,
